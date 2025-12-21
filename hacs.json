@@ -1,0 +1,7 @@
+{
+  "name": "Custom Notify Actions",
+  "render_readme": true,
+  "domains": ["notify"],
+  "iot_class": "Local Push",
+  "homeassistant": "2024.1.0"
+}

@@ -1,0 +1,12 @@
+{
+  "domain": "notify_actions",
+  "name": "Notify Actions",
+  "codeowners": [],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/akentner/notify_actions",
+  "iot_class": "local_push",
+  "issue_tracker": "https://github.com/akentner/notify_actions/issues",
+  "requirements": [],
+  "version": "1.0.1"
+}

@@ -1,0 +1,50 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Benachrichtigungs-Aktion konfigurieren",
+        "description": "Erstelle eine neue benutzerdefinierte Benachrichtigungs-Aktion, die Events auslöst statt echte Benachrichtigungen zu senden. Perfekt für erweiterte Automationen!\n\n**Verfügbare Template-Variablen:**\n• message - Benachrichtigungs-Nachricht\n• title - Benachrichtigungs-Titel\n• target - Benachrichtigungs-Ziel\n• data - Datenobjekt (zusammengeführt mit default_data)\n• action_id - Die Aktions-ID\n• friendly_name - Der Anzeigename",
+        "data": {
+          "action_id": "Aktions-ID",
+          "friendly_name": "Anzeigename",
+          "action_sequence": "Aktionssequenz",
+          "default_data": "Standard-Daten"
+        },
+        "data_description": {
+          "action_id": "Eindeutige Kennung für diese Aktion (z.B. 'meine_benachrichtigung'). Wird als notify.meine_benachrichtigung verwendet",
+          "friendly_name": "Anzeigename in der Home Assistant Oberfläche",
+          "action_sequence": "Optionale Sequenz von Aktionen, die nach dem Event ausgeführt werden. Verwende den visuellen Editor um Action-Aufrufe, Verzögerungen, Bedingungen usw. hinzuzufügen.",
+          "default_data": "Standard-Datenobjekt, das in Templates verfügbar ist und mit Benachrichtigungsdaten zusammengeführt wird. Benutzerdefinierte Werte überschreiben diese Standards. Leer lassen für leeres Objekt."
+        }
+      }
+    },
+    "error": {
+      "already_configured": "Eine Aktion mit dieser ID existiert bereits",
+      "invalid_action": "Ungültige Aktion in der Sequenz"
+    },
+    "abort": {
+      "already_configured": "Diese Aktion wurde bereits konfiguriert"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Benachrichtigungs-Aktion konfigurieren",
+        "description": "Konfiguriere Anzeigename, optionale Standard-Daten und Aktionssequenzen, die nach dem Event ausgeführt werden.\n\n**Verfügbare Template-Variablen:**\n• message - Benachrichtigungs-Nachricht\n• title - Benachrichtigungs-Titel\n• target - Benachrichtigungs-Ziel\n• data - Datenobjekt (zusammengeführt mit default_data)\n• action_id - Die Aktions-ID\n• friendly_name - Der Anzeigename",
+        "data": {
+          "friendly_name": "Anzeigename",
+          "action_sequence": "Aktionssequenz",
+          "default_data": "Standard-Daten"
+        },
+        "data_description": {
+          "friendly_name": "Anzeigename in der Home Assistant Oberfläche",
+          "action_sequence": "Optionale Sequenz von Aktionen, die nach dem Event ausgeführt werden. Verwende den visuellen Editor um Action-Aufrufe, Verzögerungen, Bedingungen usw. hinzuzufügen.",
+          "default_data": "Standard-Datenobjekt, das in Templates verfügbar ist und mit Benachrichtigungsdaten zusammengeführt wird. Benutzerdefinierte Werte überschreiben diese Standards. Leer lassen für leeres Objekt."
+        }
+      }
+    },
+    "error": {
+      "invalid_action": "Ungültige Aktion in der Sequenz"
+    }
+  }
+}

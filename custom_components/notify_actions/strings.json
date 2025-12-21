@@ -1,0 +1,50 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configure Notification Action",
+        "description": "Create a new custom notification action that fires events instead of sending actual notifications. Perfect for advanced automations!\n\n**Available template variables:**\n• message - Notification message\n• title - Notification title\n• target - Notification target\n• data - Data object (merged with default_data)\n• action_id - The action ID\n• friendly_name - The friendly name",
+        "data": {
+          "action_id": "Action ID",
+          "friendly_name": "Friendly Name",
+          "action_sequence": "Action Sequence",
+          "default_data": "Default Data"
+        },
+        "data_description": {
+          "action_id": "Unique identifier for this action (e.g., 'my_notification'). Will be used as notify.my_notification",
+          "friendly_name": "Display name shown in the Home Assistant UI",
+          "action_sequence": "Optional sequence of actions to execute after firing the event. Use the visual editor to add service calls, delays, conditions, etc.",
+          "default_data": "Default data object that will be available in templates and merged with notification data. User-provided data values will override these defaults. Leave empty for an empty object."
+        }
+      }
+    },
+    "error": {
+      "already_configured": "An action with this ID already exists",
+      "invalid_action": "Invalid action in sequence"
+    },
+    "abort": {
+      "already_configured": "This action has already been configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configure Notification Action",
+        "description": "Configure friendly name, optional default data and action sequences that execute after the event is fired.\n\n**Available template variables:**\n• message - Notification message\n• title - Notification title\n• target - Notification target\n• data - Data object (merged with default_data)\n• action_id - The action ID\n• friendly_name - The friendly name",
+        "data": {
+          "friendly_name": "Friendly Name",
+          "action_sequence": "Action Sequence",
+          "default_data": "Default Data"
+        },
+        "data_description": {
+          "friendly_name": "Display name shown in the Home Assistant UI",
+          "action_sequence": "Optional sequence of actions to execute after firing the event. Use the visual editor to add service calls, delays, conditions, etc.",
+          "default_data": "Default data object that will be available in templates and merged with notification data. User-provided data values will override these defaults. Leave empty for an empty object."
+        }
+      }
+    },
+    "error": {
+      "invalid_action": "Invalid action in sequence"
+    }
+  }
+}
