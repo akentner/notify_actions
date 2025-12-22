@@ -1,4 +1,4 @@
-# Custom Notify Actions for Home Assistant
+# Notify Actions for Home Assistant
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://github.com/hacs/integration)
 [![GitHub Release](https://img.shields.io/github/release/akentner/notify_actions.svg)](https://github.com/akentner/notify_actions/releases)
