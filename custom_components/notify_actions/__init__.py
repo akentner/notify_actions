@@ -6,12 +6,16 @@ from typing import Any
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.const import Platform
+from homeassistant.helpers import config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = "notify_actions"
 PLATFORMS = [Platform.NOTIFY]
 EVENT_NAME = "notify_actions.message"
+
+# Integration is configured via UI only (Config Entry)
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     """Set up the Notify Actions component."""

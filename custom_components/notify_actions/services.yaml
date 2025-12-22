@@ -1,0 +1,4 @@
+# Notify Actions dynamically creates notification services
+# Services are created as: notify.<action_id>
+# See README for usage details
+{}
