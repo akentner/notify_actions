@@ -132,8 +132,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
 
         # Get current values from options (or data as fallback)
         current_friendly_name = self.config_entry.options.get(
-            CONF_FRIENDLY_NAME,
-            self.config_entry.data.get(CONF_FRIENDLY_NAME, "")
+            CONF_FRIENDLY_NAME, self.config_entry.data.get(CONF_FRIENDLY_NAME, "")
         )
         current_sequence = self.config_entry.options.get(CONF_ACTION_SEQUENCE, [])
         current_default_data = self.config_entry.options.get(CONF_DEFAULT_DATA, {})

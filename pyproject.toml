@@ -1,0 +1,35 @@
+[project]
+name = "notify-actions"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.10",
+    "pre-commit>=4.0.0",
+    "poethepoet>=0.31.0",
+]
+
+[tool.poe.tasks]
+# Linting and formatting
+lint = "ruff check ."
+lint-fix = "ruff check . --fix"
+format = "ruff format ."
+format-check = "ruff format . --check"
+
+# Combined checks
+check = ["lint", "format-check"]
+
+# Pre-commit
+precommit = "pre-commit run --all-files"
+precommit-install = "pre-commit install"
+precommit-update = "pre-commit autoupdate"
+
+# Dependencies
+install = "uv sync"
+
+# Cleanup
+clean.shell = "rm -rf .ruff_cache __pycache__ .pytest_cache **/__pycache__"

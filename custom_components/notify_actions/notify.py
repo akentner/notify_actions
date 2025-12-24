@@ -18,7 +18,6 @@ from homeassistant.helpers.script import Script
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, Context
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.const import CONF_VARIABLES
 from homeassistant.helpers.template import Template
 import copy
 
@@ -45,11 +44,15 @@ def _render_templates(data: Any, hass: HomeAssistant, variables: dict[str, Any])
                 return data
         return data
     elif isinstance(data, dict):
-        return {key: _render_templates(value, hass, variables) for key, value in data.items()}
+        return {
+            key: _render_templates(value, hass, variables)
+            for key, value in data.items()
+        }
     elif isinstance(data, list):
         return [_render_templates(item, hass, variables) for item in data]
     else:
         return data
+
 
 async def async_get_service(
     hass: HomeAssistant,
@@ -72,8 +75,7 @@ async def async_get_service(
 
     # Get friendly_name from options (if updated), otherwise from data
     friendly_name = config_entry.options.get(
-        CONF_FRIENDLY_NAME,
-        config_entry.data.get(CONF_FRIENDLY_NAME, "")
+        CONF_FRIENDLY_NAME, config_entry.data.get(CONF_FRIENDLY_NAME, "")
     )
 
     # Get action sequence and default data from options
@@ -88,6 +90,7 @@ async def async_get_service(
         default_data,
     )
 
+
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
@@ -98,8 +101,7 @@ async def async_setup_entry(
 
     # Get friendly_name from options (if updated), otherwise from data
     friendly_name = config_entry.options.get(
-        CONF_FRIENDLY_NAME,
-        config_entry.data.get(CONF_FRIENDLY_NAME, "")
+        CONF_FRIENDLY_NAME, config_entry.data.get(CONF_FRIENDLY_NAME, "")
     )
 
     # Get action sequence and default data from options (if configured)
@@ -113,9 +115,7 @@ async def async_setup_entry(
         )
 
     if default_data:
-        _LOGGER.info(
-            f"Default data loaded for '{action_id}': {default_data}"
-        )
+        _LOGGER.info(f"Default data loaded for '{action_id}': {default_data}")
 
     # Create NotifyEntity for notify.send_message support
     entity = CustomNotifyActionEntity(
@@ -164,9 +164,7 @@ async def async_setup_entry(
     )
 
     # Register options update listener
-    config_entry.async_on_unload(
-        config_entry.add_update_listener(async_reload_entry)
-    )
+    config_entry.async_on_unload(config_entry.add_update_listener(async_reload_entry))
 
     _LOGGER.info(
         f"Notification action '{action_id}' registered with event '{EVENT_NAME}'"
@@ -222,7 +220,11 @@ class CustomNotifyActionService(BaseNotificationService):
 
         # Add all other kwargs
         for key, value in kwargs.items():
-            if key not in event_data and key not in [ATTR_TITLE, ATTR_TARGET, ATTR_DATA]:
+            if key not in event_data and key not in [
+                ATTR_TITLE,
+                ATTR_TARGET,
+                ATTR_DATA,
+            ]:
                 event_data[key] = value
 
         # Fire the event first
@@ -234,7 +236,9 @@ class CustomNotifyActionService(BaseNotificationService):
 
         # Then execute action sequence if configured
         if self._action_sequence:
-            _LOGGER.debug(f"Executing action sequence for '{self._action_id}' with variables: {event_data}")
+            _LOGGER.debug(
+                f"Executing action sequence for '{self._action_id}' with variables: {event_data}"
+            )
             try:
                 # Validate and transform the action sequence through schema
                 # This converts plain dicts to proper objects (e.g., variables blocks)
@@ -258,9 +262,7 @@ class CustomNotifyActionService(BaseNotificationService):
                     context=context,
                 )
             except vol.Invalid as err:
-                _LOGGER.error(
-                    f"Invalid action sequence for '{self._action_id}': {err}"
-                )
+                _LOGGER.error(f"Invalid action sequence for '{self._action_id}': {err}")
             except Exception as err:
                 _LOGGER.error(
                     f"Error executing action sequence for '{self._action_id}': {err}"
@@ -319,13 +321,13 @@ class CustomNotifyActionEntity(NotifyEntity):
         # Fire the event first
         self.hass.bus.async_fire(EVENT_NAME, event_data)
 
-        _LOGGER.debug(
-            f"Event '{EVENT_NAME}' fired from entity with data: {event_data}"
-        )
+        _LOGGER.debug(f"Event '{EVENT_NAME}' fired from entity with data: {event_data}")
 
         # Then execute action sequence if configured
         if self._action_sequence:
-            _LOGGER.debug(f"Executing action sequence for entity '{self._action_id}' with variables: {event_data}")
+            _LOGGER.debug(
+                f"Executing action sequence for entity '{self._action_id}' with variables: {event_data}"
+            )
             try:
                 # Validate and transform the action sequence through schema
                 # This converts plain dicts to proper objects (e.g., variables blocks)
