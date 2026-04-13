@@ -8,7 +8,7 @@ dependencies = []
 
 [dependency-groups]
 dev = [
-    "ruff>=0.14.10",
+    "ruff>=0.15.10",
     "pre-commit>=4.0.0",
     "poethepoet>=0.31.0",
 ]
