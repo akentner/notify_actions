@@ -38,12 +38,12 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
     domain_data = hass.data[DOMAIN].get(entry.entry_id, {})
 
-    # Remove the manually registered notify service before the platform unload.
-    action_id = domain_data.get("action_id") if isinstance(domain_data, dict) else None
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+
+    # Remove the manually registered notify service if still present after platform unload.
+    action_id = domain_data.get("action_id")
     if action_id and hass.services.has_service("notify", action_id):
         hass.services.async_remove("notify", action_id)
-
-    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id, None)

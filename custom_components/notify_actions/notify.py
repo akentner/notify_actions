@@ -30,7 +30,6 @@ CONF_ACTION_SEQUENCE = "action_sequence"
 CONF_DEFAULT_DATA = "default_data"
 
 
-
 async def async_get_service(
     hass: HomeAssistant,
     config: dict[str, Any],
@@ -48,7 +47,7 @@ async def async_get_service(
     if domain_data is None:
         return None
 
-    config_entry = domain_data.get("config_entry") if isinstance(domain_data, dict) else domain_data
+    config_entry = domain_data.get("config_entry")
     if config_entry is None:
         return None
 
