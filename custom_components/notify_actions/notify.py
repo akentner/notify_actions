@@ -18,7 +18,6 @@ from homeassistant.helpers.script import Script
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, Context
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.template import Template
 import copy
 
 from . import DOMAIN, EVENT_NAME
@@ -30,28 +29,6 @@ CONF_FRIENDLY_NAME = "friendly_name"
 CONF_ACTION_SEQUENCE = "action_sequence"
 CONF_DEFAULT_DATA = "default_data"
 
-
-def _render_templates(data: Any, hass: HomeAssistant, variables: dict[str, Any]) -> Any:
-    """Recursively render all templates in data structure."""
-    if isinstance(data, str):
-        # Check if string contains template syntax
-        if "{{" in data or "{%" in data:
-            try:
-                template = Template(data, hass)
-                return template.async_render(variables, parse_result=False)
-            except Exception as err:
-                _LOGGER.warning(f"Failed to render template '{data}': {err}")
-                return data
-        return data
-    elif isinstance(data, dict):
-        return {
-            key: _render_templates(value, hass, variables)
-            for key, value in data.items()
-        }
-    elif isinstance(data, list):
-        return [_render_templates(item, hass, variables) for item in data]
-    else:
-        return data
 
 
 async def async_get_service(
@@ -67,7 +44,11 @@ async def async_get_service(
     if entry_id is None:
         return None
 
-    config_entry = hass.data[DOMAIN].get(entry_id)
+    domain_data = hass.data[DOMAIN].get(entry_id)
+    if domain_data is None:
+        return None
+
+    config_entry = domain_data.get("config_entry") if isinstance(domain_data, dict) else domain_data
     if config_entry is None:
         return None
 
@@ -163,6 +144,11 @@ async def async_setup_entry(
         schema=service_schema,
     )
 
+    # Expose runtime objects so async_reload_entry can update them in-place.
+    hass.data[DOMAIN][config_entry.entry_id].update(
+        {"action_id": action_id, "service": service, "entity": entity}
+    )
+
     # Register options update listener
     config_entry.async_on_unload(config_entry.add_update_listener(async_reload_entry))
 
@@ -172,8 +158,32 @@ async def async_setup_entry(
 
 
 async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
-    """Reload the config entry when options change."""
-    await hass.config_entries.async_reload(entry.entry_id)
+    """Apply updated options in-place without a full config-entry reload.
+
+    Updating action_sequence and default_data directly on the running service
+    and entity objects avoids the unload/reload cycle, which would fail because
+    the manually registered notify service lives outside entity-component tracking.
+    """
+    domain_data = hass.data.get(DOMAIN, {}).get(entry.entry_id, {})
+    new_sequence = entry.options.get(CONF_ACTION_SEQUENCE, [])
+    new_default = entry.options.get(CONF_DEFAULT_DATA, {})
+
+    new_friendly_name = entry.options.get(
+        CONF_FRIENDLY_NAME, entry.data.get(CONF_FRIENDLY_NAME, "")
+    )
+
+    for key in ("service", "entity"):
+        obj = domain_data.get(key)
+        if obj is not None:
+            obj._action_sequence = new_sequence
+            obj._default_data = new_default
+            obj._friendly_name = new_friendly_name
+
+    _LOGGER.info(
+        "Options updated in-place for '%s' (%d action steps)",
+        domain_data.get("action_id", entry.entry_id),
+        len(new_sequence),
+    )
 
 
 class CustomNotifyActionService(BaseNotificationService):

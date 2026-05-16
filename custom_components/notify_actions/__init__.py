@@ -26,8 +26,8 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Notify Actions from a config entry."""
     hass.data.setdefault(DOMAIN, {})
-    # Store the entire config entry to access both data and options
-    hass.data[DOMAIN][entry.entry_id] = entry
+    # Initialise with the config entry; notify.py will add runtime objects.
+    hass.data[DOMAIN][entry.entry_id] = {"config_entry": entry}
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
@@ -36,9 +36,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
+    domain_data = hass.data[DOMAIN].get(entry.entry_id, {})
+
+    # Remove the manually registered notify service before the platform unload.
+    action_id = domain_data.get("action_id") if isinstance(domain_data, dict) else None
+    if action_id and hass.services.has_service("notify", action_id):
+        hass.services.async_remove("notify", action_id)
+
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
     if unload_ok:
-        hass.data[DOMAIN].pop(entry.entry_id)
+        hass.data[DOMAIN].pop(entry.entry_id, None)
 
     return unload_ok
